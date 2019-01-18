@@ -1,0 +1,18 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_unsigned.all;
+
+
+Entity COMPARADOR_BANIO is
+	Port(	Hora: In std_logic_vector (4 downto 0);
+			Min: In std_logic_vector(5 downto 0);
+			enable: IN std_logic;
+			verde,amarillo,rojo: Out std_logic	);
+End COMPARADOR_BANIO;
+
+Architecture desarrollo of COMPARADOR_BANIO is
+	Begin
+		verde <='1' when ((enable='1' and Hora="01001" and Min <"001010") or (enable='1' and Hora="01101" and Min >="011110" and Min <"101000") or (enable='1' and Hora="10100" and Min >="011110" and Min <"101000")) else '0';
+		amarillo <='1' when ((enable='1' and Hora="01001" and Min <"010100" and Min>="001010") or (enable='1' and Hora="01101" and Min >="101000" and Min < "110010") or (enable='1' and Hora="10100" and Min >="101000" and Min < "110010")) else '0';
+		rojo <='1' when ((enable='1' and Hora="01001" and Min >="010100" and Min <="011110") or (enable='1' and Hora="01101" and Min >="110010" and Min <="111011") or (enable='1' and Hora="10100" and Min >="110010" and Min <="111011")) else '0' ;
+end desarrollo;
