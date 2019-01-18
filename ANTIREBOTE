@@ -1,51 +1,29 @@
-/*
-WARNING: Do NOT edit the input and output ports in this file in a text
-editor if you plan to continue editing the block that represents it in
-the Block Editor! File corruption is VERY likely to occur.
-*/
-/*
-Copyright (C) 2017  Intel Corporation. All rights reserved.
-Your use of Intel Corporation's design tools, logic functions 
-and other software and tools, and its AMPP partner logic 
-functions, and any output files from any of the foregoing 
-(including device programming or simulation files), and any 
-associated documentation or information are expressly subject 
-to the terms and conditions of the Intel Program License 
-Subscription Agreement, the Intel Quartus Prime License Agreement,
-the Intel MegaCore Function License Agreement, or other 
-applicable license agreement, including, without limitation, 
-that your use is for the sole purpose of programming logic 
-devices manufactured by Intel and sold by Intel or its 
-authorized distributors.  Please refer to the applicable 
-agreement for further details.
-*/
-(header "symbol" (version "1.1"))
-(symbol
-	(rect 16 16 264 96)
-	(text "ANTIREBOTE" (rect 5 0 69 12)(font "Arial" ))
-	(text "inst" (rect 8 64 20 76)(font "Arial" ))
-	(port
-		(pt 0 32)
-		(input)
-		(text "PB_N" (rect 0 0 24 12)(font "Arial" ))
-		(text "PB_N" (rect 21 27 45 39)(font "Arial" ))
-		(line (pt 0 32)(pt 16 32)(line_width 1))
-	)
-	(port
-		(pt 0 48)
-		(input)
-		(text "CLOCK_100Hz" (rect 0 0 63 12)(font "Arial" ))
-		(text "CLOCK_100Hz" (rect 21 43 84 55)(font "Arial" ))
-		(line (pt 0 48)(pt 16 48)(line_width 1))
-	)
-	(port
-		(pt 248 32)
-		(output)
-		(text "PB_SIN_REBOTE" (rect 0 0 80 12)(font "Arial" ))
-		(text "PB_SIN_REBOTE" (rect 147 27 227 39)(font "Arial" ))
-		(line (pt 248 32)(pt 232 32)(line_width 1))
-	)
-	(drawing
-		(rectangle (rect 16 16 232 64)(line_width 1))
-	)
-)
+LIBRARY IEEE;
+USE  IEEE.STD_LOGIC_1164.all;
+USE  IEEE.STD_LOGIC_ARITH.all;
+USE  IEEE.STD_LOGIC_UNSIGNED.all;
+
+	-- Debounce Pushbutton: Filters out mechanical switch bounce for around 40Ms.
+ENTITY ANTIREBOTE IS
+	PORT(PB_N, CLOCK_100Hz 	: IN	STD_LOGIC;
+		  PB_SIN_REBOTE		: OUT	STD_LOGIC);
+END ANTIREBOTE;
+
+ARCHITECTURE a OF ANTIREBOTE IS
+	SIGNAL SHIFT_PB 		: STD_LOGIC_VECTOR(3 DOWNTO 0);
+BEGIN
+
+	-- Debounce clock should be approximately 10ms or 100Hz
+	PROCESS
+	BEGIN
+  		WAIT UNTIL (clock_100Hz'EVENT) AND (clock_100Hz = '1');
+		-- Use a shift register to filter switch contact bounce
+  		SHIFT_PB(2 DOWNTO 0) <= SHIFT_PB(3 DOWNTO 1);
+  		SHIFT_PB(3) <= NOT PB_N;
+  		IF SHIFT_PB(3 DOWNTO 0)="0000" THEN
+   			PB_SIN_REBOTE <= '0';
+  		ELSE 
+   	 		PB_SIN_REBOTE <= '1';
+  		END IF;
+	END PROCESS;
+END a;
