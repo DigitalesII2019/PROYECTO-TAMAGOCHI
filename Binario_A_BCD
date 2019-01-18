@@ -1,0 +1,38 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+ 
+entity Binario_a_BCD is
+    GENERIC(
+        NBITS  : integer :=  6; 
+        NSALIDA: integer := 8);
+    PORT(
+        num_bin: in  STD_LOGIC_VECTOR(NBITS-1   downto 0);
+        num_bcd: out STD_LOGIC_VECTOR(NSALIDA-1 downto 0));
+end Binario_a_BCD;
+ 
+architecture Behavioral of Binario_a_BCD is
+begin
+    proceso_bcd: process(num_bin)
+        variable z: STD_LOGIC_VECTOR(NBITS+NSALIDA-1 downto 0);
+    begin
+        
+        z := (others => '0');
+        
+        z(NBITS+2 downto 3) := num_bin;
+        
+        for i in 0 to NBITS-4 loop
+            
+            if z(NBITS+3 downto NBITS) > 4 then
+                z(NBITS+3 downto NBITS) := z(NBITS+3 downto NBITS) + 3;
+            end if;
+            if z(NBITS+7 downto NBITS+4) > 4 then
+                z(NBITS+7 downto NBITS+4) := z(NBITS+7 downto NBITS+4) + 3;
+            end if;
+            
+            z(NBITS+NSALIDA-1 downto 1) := z(NBITS+NSALIDA-2 downto 0);
+        end loop;
+        
+        num_bcd <= z(NBITS+NSALIDA-1 downto NBITS);
+    end process;
+end Behavioral;
