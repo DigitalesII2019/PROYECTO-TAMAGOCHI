@@ -1,0 +1,18 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_unsigned.all;
+
+
+Entity COMPARADOR_COMER is
+	Port(	Hora: In std_logic_vector (4 downto 0);
+			Min: In std_logic_vector(5 downto 0);
+			enable: IN std_logic;
+			verde,amarillo,rojo: Out std_logic	);
+End COMPARADOR_COMER;
+
+Architecture desarrollo of COMPARADOR_COMER is
+	Begin
+		verde <='1' when ((enable='1' and Hora="00111" and Min >= "011110" and Min <="111011") or (enable='1' and Hora="01100" and Min <="011110") or (enable='1' and Hora="10011" and Min <="011110")) else '0';
+		amarillo <='1' when ((enable='1' and Hora="01000" and Min <="001111") or (enable='1' and Hora="01100" and Min >"011110" and Min <= "101101") or (enable='1' and Hora="10011" and Min >"011110" and Min <= "101101")) else '0';
+		rojo <='1' when ((enable='1' and Hora="01000" and Min >"001111" and Min <="011101") or (enable='1' and Hora="01100" and Min >"101101" and Min <="111011") or (enable='1' and Hora="10011" and Min >"101101" and Min <="111011")) else '0' ;
+end desarrollo;
