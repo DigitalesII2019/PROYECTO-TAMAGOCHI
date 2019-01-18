@@ -1,0 +1,17 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_unsigned.all;
+
+
+Entity COMPARADOR_DORMIR is
+	Port(	Hora: In std_logic_vector (4 downto 0);
+			enable: IN std_logic;
+			verde,amarillo,rojo: Out std_logic	);
+End COMPARADOR_DORMIR;
+
+Architecture desarrollo of COMPARADOR_DORMIR is
+	Begin
+		verde <='1' when (enable='1' and Hora="10110") else '0';
+		amarillo <='1' when (enable='1' and Hora="10111") else '0';
+		rojo <='1' when (enable='1' and Hora<"00111") else '0' ;
+end desarrollo;
