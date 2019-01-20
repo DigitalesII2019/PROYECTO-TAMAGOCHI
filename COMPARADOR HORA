@@ -1,0 +1,14 @@
+Library IEEE;
+Use IEEE.std_logic_1164.all;
+Use IEEE.std_logic_unsigned.all;
+
+
+Entity COMPARADOR_Hora is
+	Port(	Hora: In std_logic_vector(4 downto 0);
+			L1: Out std_logic	);
+End COMPARADOR_Hora;
+
+Architecture desarrollo of COMPARADOR_Hora is
+	Begin
+		L1 <= '1' when (Hora="11000") else '0';
+end desarrollo;
